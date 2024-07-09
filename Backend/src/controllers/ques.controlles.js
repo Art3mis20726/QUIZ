@@ -30,7 +30,7 @@ const quesUpload = asyncHandler(async (req, res) => {
   }
 
   // Check if there is already a type of question for the user
-  let typeOfQuestion = await Questions.findOne({ type, owner: user._id });
+  const typeOfQuestion = await Questions.findOne({ type, owner: user._id });
 
   if (!typeOfQuestion) {
     // Create a new type of question if it doesn't exist
@@ -40,25 +40,20 @@ const quesUpload = asyncHandler(async (req, res) => {
       questions: [
         {
           question,
-          options: [
-            { a: opt[0] },
-            { b: opt[1] },
-            { c: opt[2] },
-            { d: opt[3] },
-          ],
+          options:opt,
+         
+          
           correct,
         },
       ],
     };
 
-    typeOfQuestion = await Questions.create(newQuestion);
+    const firstques = await Questions.create(newQuestion);
 
-    if (!typeOfQuestion) {
+    if (!firstques) {
       throw new ApiError(400, "Error in creating new type");
-    }
-
-    // Respond with success message
-    const que = await Questions.findById(typeOfQuestion._id).select(
+    }    // Respond with success message
+    const que = await Questions.findById(firstques._id).select(
       "-questions.correct"
     );
     return res
@@ -69,12 +64,7 @@ const quesUpload = asyncHandler(async (req, res) => {
   // Add new question to existing type
   typeOfQuestion.questions.push({
     question,
-    options: [
-      { a: opt[0] },
-      { b: opt[1] },
-      { c: opt[2] },
-      { d: opt[3] },
-    ],
+    options:opt,
     correct,
   });
 
