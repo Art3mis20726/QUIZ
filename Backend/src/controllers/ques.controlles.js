@@ -29,7 +29,6 @@ const quesUpload = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Question not uploaded")
   }
    const quesUrl=question.url
-  console.log(quesUrl);
   // Find the user
   const user = await User.findById(req.user?._id);
   if (!user) {
